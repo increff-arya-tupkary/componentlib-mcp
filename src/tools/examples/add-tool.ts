@@ -4,11 +4,16 @@
 
 import { BaseTool } from "@tools/base-tool.js";
 import { ValidationError } from "@types";
+import { z } from "zod";
 
 export class AddTool extends BaseTool {
 	readonly name = "add";
 	readonly title = "Addition Tool";
 	readonly description = "Add two numbers";
+	readonly inputSchema = {
+		a: z.string().describe("First number"),
+		b: z.string().describe("Second number"),
+	};
 
 	async execute(params: Record<string, unknown>): Promise<{
 		content: Array<{ type: "text"; text: string }>;

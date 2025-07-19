@@ -3,11 +3,13 @@
  */
 
 import type { ToolDefinition } from "@types";
+import type { ZodRawShape } from "zod";
 
 export abstract class BaseTool {
 	abstract readonly name: string;
 	abstract readonly title: string;
 	abstract readonly description: string;
+	abstract readonly inputSchema: ZodRawShape;
 
 	/**
 	 * Execute the tool with given parameters
@@ -25,6 +27,7 @@ export abstract class BaseTool {
 			description: {
 				title: this.title,
 				description: this.description,
+				inputSchema: this.inputSchema,
 			},
 			handler: (params: Record<string, unknown>) => this.execute(params),
 		};

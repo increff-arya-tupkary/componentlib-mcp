@@ -8,6 +8,7 @@ import type {
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Request, Response } from "express";
+import type { ZodRawShape } from "zod";
 
 /**
  * Session management types
@@ -35,8 +36,9 @@ export interface SessionManager {
 export interface ToolDefinition {
 	name: string;
 	description: {
-		title?: string;
-		description?: string;
+		title: string;
+		description: string;
+		inputSchema: ZodRawShape;
 	};
 	handler: (params: Record<string, unknown>) => Promise<{
 		content: Array<{ type: "text"; text: string }>;
