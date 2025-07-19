@@ -8,7 +8,8 @@
 		"format": "biome check --fix src",
 		"lint": "biome check src",
 		"start": "node dist/main.js",
-		"type-check": "biome check --tsc src"
+		"type-check": "biome check --tsc src",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.16.0",
@@ -17,8 +18,11 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.1.2",
+		"@commitlint/cli": "^19.8.1",
+		"@commitlint/config-conventional": "^19.8.1",
 		"@types/express": "^5.0.3",
 		"@types/node": "^24.0.15",
+		"husky": "^9.1.7",
 		"typescript": "^5.8.3"
 	}
 }
