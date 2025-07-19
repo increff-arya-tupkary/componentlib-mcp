@@ -2,9 +2,9 @@
  * Tool registration and management
  */
 
-import type { ToolDefinition, ToolRegistry } from "../types/index.js";
-import { logger } from "../utils/logger.js";
-import type { BaseTool } from "./base-tool.js";
+import type { BaseTool } from "@tools/base-tool.js";
+import type { ToolDefinition, ToolRegistry } from "@types";
+import { logger } from "@utils/logger.js";
 
 export class ToolRegistryImpl implements ToolRegistry {
 	private tools: Map<string, ToolDefinition> = new Map();

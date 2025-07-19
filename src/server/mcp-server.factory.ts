@@ -2,10 +2,10 @@
  * Factory for creating configured MCP servers
  */
 
+import type { ServerConfig } from "@config/server.config.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { ServerConfig } from "../config/server.config.js";
-import type { ServerDependencies, ServerFactory } from "../types/index.js";
-import { logger } from "../utils/logger.js";
+import type { ServerDependencies, ServerFactory } from "@types";
+import { logger } from "@utils/logger.js";
 
 export class McpServerFactory implements ServerFactory {
 	constructor(private readonly config: ServerConfig) {}

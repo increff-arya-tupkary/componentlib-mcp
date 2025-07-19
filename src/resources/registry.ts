@@ -2,9 +2,9 @@
  * Resource registration and management
  */
 
-import type { ResourceDefinition, ResourceRegistry } from "../types/index.js";
-import { logger } from "../utils/logger.js";
-import type { BaseResource } from "./base-resource.js";
+import type { BaseResource } from "@resources/base-resource.js";
+import type { ResourceDefinition, ResourceRegistry } from "@types";
+import { logger } from "@utils/logger.js";
 
 export class ResourceRegistryImpl implements ResourceRegistry {
 	private resources: Map<string, ResourceDefinition> = new Map();

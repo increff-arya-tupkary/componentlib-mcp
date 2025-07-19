@@ -2,8 +2,8 @@
  * Main entry point for HeroUI MCP Server
  */
 
+import { logger } from "@utils/logger.js";
 import { HeroUiMcpApplication } from "./app.js";
-import { logger } from "./utils/logger.js";
 
 /**
  * Main function to start the application

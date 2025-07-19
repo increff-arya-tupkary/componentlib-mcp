@@ -3,8 +3,8 @@
  */
 
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
+import { createSessionError } from "@utils/errors.js";
 import type { Request, Response } from "express";
-import { createSessionError } from "../../utils/errors.js";
 
 /**
  * Extract session ID from request headers

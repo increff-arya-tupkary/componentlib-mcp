@@ -3,24 +3,20 @@
  */
 
 import { randomUUID } from "node:crypto";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import type { Request, Response } from "express";
 import type {
 	HttpTransportConfig,
 	ServerConfig,
-} from "../../config/server.config.js";
-import type {
-	ServerDependencies,
-	ServerFactory,
-	SessionManager,
-} from "../../types/index.js";
-import { handleError } from "../../utils/errors.js";
-import { logger } from "../../utils/logger.js";
+} from "@config/server.config.js";
 import {
 	getRequestId,
 	getSessionId,
 	validateMcpRequest,
-} from "../utils/request.utils.js";
+} from "@http/utils/request.utils.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import type { ServerDependencies, ServerFactory, SessionManager } from "@types";
+import { handleError } from "@utils/errors.js";
+import { logger } from "@utils/logger.js";
+import type { Request, Response } from "express";
 
 export class McpRouteHandlers {
 	constructor(

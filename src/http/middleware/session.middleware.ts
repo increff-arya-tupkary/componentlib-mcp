@@ -2,12 +2,12 @@
  * Session management middleware
  */
 
+import { getSessionId, validateSessionId } from "@http/utils/request.utils.js";
 import type { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import type { SessionManager } from "@types";
+import { handleError } from "@utils/errors.js";
+import { logger } from "@utils/logger.js";
 import type { NextFunction, Request, Response } from "express";
-import type { SessionManager } from "../../types/index.js";
-import { handleError } from "../../utils/errors.js";
-import { logger } from "../../utils/logger.js";
-import { getSessionId, validateSessionId } from "../utils/request.utils.js";
 
 /**
  * Extended request interface with session info

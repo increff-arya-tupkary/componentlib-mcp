@@ -3,7 +3,7 @@
  */
 
 import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { ResourceDefinition } from "../types/index.js";
+import type { ResourceDefinition } from "@types";
 
 export abstract class BaseResource {
 	abstract readonly name: string;

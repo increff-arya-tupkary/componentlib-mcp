@@ -2,7 +2,7 @@
  * Abstract base class for MCP tools
  */
 
-import type { ToolDefinition } from "../types/index.js";
+import type { ToolDefinition } from "@types";
 
 export abstract class BaseTool {
 	abstract readonly name: string;

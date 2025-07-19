@@ -3,7 +3,7 @@
  */
 
 import type { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import type { SessionManager, SessionTransport } from "../types/index.js";
+import type { SessionManager, SessionTransport } from "@types";
 
 export class SessionTransportManager implements SessionManager {
 	private transports: Map<string, SessionTransport> = new Map();

@@ -2,12 +2,8 @@
  * Error handling utilities for HeroUI MCP Server
  */
 
+import { McpServerError, SessionError, ValidationError } from "@types";
 import type { Response } from "express";
-import {
-	McpServerError,
-	SessionError,
-	ValidationError,
-} from "../types/index.js";
 
 /**
  * Standard JSON-RPC error codes

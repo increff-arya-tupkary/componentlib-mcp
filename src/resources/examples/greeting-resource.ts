@@ -19,8 +19,8 @@
 	}red from original main.ts
  */
 
-import { ValidationError } from "../../types/index.js";
-import { BaseResource } from "../base-resource.js";
+import { BaseResource } from "@resources/base-resource.js";
+import { ValidationError } from "@types";
 
 export class GreetingResource extends BaseResource {
 	readonly name = "greeting";

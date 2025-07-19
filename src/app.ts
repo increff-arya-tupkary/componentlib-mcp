@@ -3,25 +3,25 @@
  */
 
 import type { Server } from "node:http";
-import type { Express } from "express";
-import express from "express";
-import type { ServerConfig } from "./config/server.config.js";
-import { defaultServerConfig } from "./config/server.config.js";
+import type { ServerConfig } from "@config/server.config.js";
+import { defaultServerConfig } from "@config/server.config.js";
 import {
 	addCorsHeaders,
 	logRequest,
 	validateJsonContent,
-} from "./http/middleware/session.middleware.js";
-import { McpRouteHandlers } from "./http/routes/mcp-routes.js";
-import { GreetingResource } from "./resources/examples/greeting-resource.js";
-import { ResourceRegistryImpl } from "./resources/registry.js";
-import { McpServerFactory } from "./server/mcp-server.factory.js";
-import { AddTool } from "./tools/examples/add-tool.js";
-import { ToolRegistryImpl } from "./tools/registry.js";
-import { SessionTransportManager } from "./transport/session-manager.js";
-import type { Application, ServerDependencies } from "./types/index.js";
-import { asyncHandler } from "./utils/errors.js";
-import { logger } from "./utils/logger.js";
+} from "@http/middleware/session.middleware.js";
+import { McpRouteHandlers } from "@http/routes/mcp-routes.js";
+import { GreetingResource } from "@resources/examples/greeting-resource.js";
+import { ResourceRegistryImpl } from "@resources/registry.js";
+import { McpServerFactory } from "@server/mcp-server.factory.js";
+import { AddTool } from "@tools/examples/add-tool.js";
+import { ToolRegistryImpl } from "@tools/registry.js";
+import { SessionTransportManager } from "@transport/session-manager.js";
+import type { Application, ServerDependencies } from "@types";
+import { asyncHandler } from "@utils/errors.js";
+import { logger } from "@utils/logger.js";
+import type { Express } from "express";
+import express from "express";
 
 export class HeroUiMcpApplication implements Application {
 	private app: Express;

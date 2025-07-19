@@ -2,8 +2,8 @@
  * Addition tool - refactored from original main.ts
  */
 
-import { ValidationError } from "../../types/index.js";
-import { BaseTool } from "../base-tool.js";
+import { BaseTool } from "@tools/base-tool.js";
+import { ValidationError } from "@types";
 
 export class AddTool extends BaseTool {
 	readonly name = "add";
