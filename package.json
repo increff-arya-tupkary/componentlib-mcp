@@ -1,0 +1,20 @@
+{
+	"name": "heroui-mcp",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "bun run src/main.ts",
+		"build": "tsc",
+		"start": "node dist/main.js"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.16.0",
+		"express": "^5.1.0",
+		"zod": "^4.0.5"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.0.15",
+		"typescript": "^5.8.3"
+	}
+}
