@@ -1,59 +1,83 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { defaultCacheConfig, getHeroUiDocsPath } from "@config/cache.config.js";
 import { BaseTool } from "@tools/base-tool.js";
-
-interface ApiContent {
-	name: string;
-	type: "file" | "dir";
-}
+import { logger } from "@utils/logger.js";
 
 export class ListComponentsTool extends BaseTool {
 	readonly name = "list_components";
 	readonly title = "List Components Tool";
-	readonly description = "List all heroui components";
+	readonly description = "List all heroui components from cached documentation";
 	readonly inputSchema = {};
 
 	async execute(_params: Record<string, unknown>): Promise<{
 		content: Array<{ type: "text"; text: string }>;
 	}> {
 		try {
-			const apiUrl =
-				"https://api.github.com/repos/heroui-inc/heroui/contents/packages/components?ref=canary";
+			// Get the path to the cached docs/components directory
+			const docsPath = getHeroUiDocsPath(defaultCacheConfig);
+			const componentsPath = path.join(docsPath, "components");
 
-			const response = await fetch(apiUrl, {
-				headers: {
-					Accept: "application/vnd.github.v3+json",
-					"User-Agent": "heroui-mcp-client",
-				},
-			});
+			logger.debug("Looking for components in:", { componentsPath });
 
-			if (!response.ok) {
-				throw new Error(
-					`GitHub API error: ${response.status} ${response.statusText}`,
-				);
+			// Check if the components directory exists
+			try {
+				await fs.access(componentsPath);
+			} catch (error) {
+				logger.warn("Components directory not found in cache", {
+					componentsPath,
+					error: error instanceof Error ? error.message : String(error),
+				});
+				return {
+					content: [
+						{
+							type: "text",
+							text: "Components directory not found in cache. Please ensure the HeroUI repository has been cloned successfully.",
+						},
+					],
+				};
 			}
 
-			const contents = (await response.json()) as ApiContent[];
+			// Read all files in the components directory
+			const files = await fs.readdir(componentsPath, { withFileTypes: true });
 
-			const components = contents
-				.filter((item) => item.type === "dir")
-				.map((item) => item.name)
+			// Filter for .mdx files and extract component names
+			const componentFiles = files
+				.filter((file) => file.isFile() && file.name.endsWith(".mdx"))
+				.map((file) => file.name.replace(".mdx", ""))
 				.sort();
 
-			const componentList = components.join("\n- ");
+			if (componentFiles.length === 0) {
+				return {
+					content: [
+						{
+							type: "text",
+							text: "No component MDX files found in the cached documentation directory.",
+						},
+					],
+				};
+			}
+
+			// Format the response
+			const componentsList = componentFiles
+				.map((component) => `- ${component}`)
+				.join("\n");
 
 			return {
 				content: [
 					{
 						type: "text",
-						text: `HeroUI Components found:\n\n- ${componentList}\n\nTotal: ${components.length} components`,
+						text: `${componentsList}`,
 					},
 				],
 			};
 		} catch (error) {
+			logger.error("Error listing components from cache:", error);
 			return {
 				content: [
 					{
 						type: "text",
-						text: `Error fetching components: ${error instanceof Error ? error.message : "Unknown error"}`,
+						text: `Error reading components from cache: ${error instanceof Error ? error.message : "Unknown error"}`,
 					},
 				],
 			};

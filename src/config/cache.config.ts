@@ -48,11 +48,8 @@ export function getHeroUiCachePath(config: CacheConfig): string {
 }
 
 /**
- * Get the full path to the HeroUI components directory
+ * Get the full path to the HeroUI docs directory
  */
-export function getHeroUiComponentsPath(config: CacheConfig): string {
-	return path.join(
-		getHeroUiCachePath(config),
-		config.heroUiSparseCheckoutPaths[0],
-	);
+export function getHeroUiDocsPath(config: CacheConfig): string {
+	return path.join(getHeroUiCachePath(config), "apps/docs/content/docs");
 }
