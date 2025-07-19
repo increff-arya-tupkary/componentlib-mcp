@@ -15,6 +15,7 @@ import { McpRouteHandlers } from "@http/routes/mcp-routes.js";
 import { GreetingResource } from "@resources/examples/greeting-resource.js";
 import { ResourceRegistryImpl } from "@resources/registry.js";
 import { McpServerFactory } from "@server/mcp-server.factory.js";
+import { GetComponentDocsTool } from "@tools/components/get-component-docs";
 import { ListComponentsTool } from "@tools/components/list-components";
 import { ToolRegistryImpl } from "@tools/registry.js";
 import { SessionTransportManager } from "@transport/session-manager.js";
@@ -156,6 +157,7 @@ export class HeroUiMcpApplication implements Application {
 
 		// Register default tools
 		toolRegistry.registerToolClass(new ListComponentsTool());
+		toolRegistry.registerToolClass(new GetComponentDocsTool());
 
 		// Register default resources
 		resourceRegistry.registerResourceClass(new GreetingResource());
