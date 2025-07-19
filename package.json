@@ -4,11 +4,12 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
+		"check": "biome check src && tsc --noEmit",
 		"dev": "bun run src/main.ts",
 		"format": "biome check --fix src",
 		"lint": "biome check src",
 		"start": "node dist/main.js",
-		"type-check": "biome check --tsc src",
+		"type-check": "tsc --noEmit",
 		"prepare": "husky"
 	},
 	"dependencies": {
