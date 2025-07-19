@@ -3,7 +3,7 @@
  */
 
 import type { ToolDefinition } from "@types";
-import type { ZodRawShape } from "zod";
+import { type ZodRawShape, z } from "zod";
 
 export abstract class BaseTool {
 	abstract readonly name: string;
@@ -36,18 +36,14 @@ export abstract class BaseTool {
 	/**
 	 * Validate input parameters
 	 */
-	protected validateParams(
-		params: Record<string, unknown>,
-		required: string[],
-	): void {
-		for (const param of required) {
-			if (
-				!(param in params) ||
-				params[param] === undefined ||
-				params[param] === ""
-			) {
-				throw new Error(`Missing required parameter: ${param}`);
-			}
+	protected validateParams(params: Record<string, unknown>): void {
+		const schema = z.object(this.inputSchema);
+		const result = schema.safeParse(params);
+
+		if (!result.success) {
+			throw new Error(
+				`Invalid parameters: ${JSON.stringify(result.error.issues)}`,
+			);
 		}
 	}
 

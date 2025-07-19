@@ -18,7 +18,7 @@ export class AddTool extends BaseTool {
 	async execute(params: Record<string, unknown>): Promise<{
 		content: Array<{ type: "text"; text: string }>;
 	}> {
-		this.validateParams(params, ["a", "b"]);
+		this.validateParams(params);
 
 		const a = String(params.a);
 		const b = String(params.b);

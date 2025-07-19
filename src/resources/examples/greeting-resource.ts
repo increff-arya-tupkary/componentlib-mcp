@@ -27,6 +27,7 @@ export class GreetingResource extends BaseResource {
 	readonly title = "Greeting Resource";
 	readonly description = "Dynamic greeting generator";
 	readonly uriTemplate = "greeting://{name}";
+	readonly mimeType = "text/plain";
 
 	async read(
 		uri: URL,

@@ -49,8 +49,9 @@ export interface ResourceDefinition {
 	name: string;
 	template: ResourceTemplate;
 	description: {
-		title?: string;
-		description?: string;
+		title: string;
+		description: string;
+		mimeType: string;
 	};
 	handler: (
 		uri: URL,

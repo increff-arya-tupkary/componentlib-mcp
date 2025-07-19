@@ -10,6 +10,7 @@ export abstract class BaseResource {
 	abstract readonly title: string;
 	abstract readonly description: string;
 	abstract readonly uriTemplate: string;
+	abstract readonly mimeType: string;
 
 	/**
 	 * Read the resource with given URI and parameters
@@ -31,6 +32,7 @@ export abstract class BaseResource {
 			description: {
 				title: this.title,
 				description: this.description,
+				mimeType: this.mimeType,
 			},
 			handler: (uri: URL, params: Record<string, string | string[]>) =>
 				this.read(uri, params),
