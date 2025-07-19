@@ -3,12 +3,12 @@
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
 		"check": "biome check src && tsc --noEmit",
 		"dev": "bun run src/main.ts",
 		"format": "biome check --fix src",
 		"lint": "biome check src",
-		"start": "node dist/main.js",
+		"start": "node dist/index.js",
 		"type-check": "tsc --noEmit",
 		"prepare": "husky"
 	},
@@ -24,6 +24,7 @@
 		"@types/express": "^5.0.3",
 		"@types/node": "^24.0.15",
 		"husky": "^9.1.7",
+		"tsc-alias": "^1.8.16",
 		"typescript": "^5.8.3"
 	}
 }
