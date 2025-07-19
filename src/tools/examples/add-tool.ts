@@ -1,7 +1,3 @@
-/**
- * Addition tool - refactored from original main.ts
- */
-
 import { BaseTool } from "@tools/base-tool.js";
 import { ValidationError } from "@types";
 import { z } from "zod";
