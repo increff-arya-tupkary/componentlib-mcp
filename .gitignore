@@ -43,6 +43,9 @@ coverage/
 tmp/
 temp/
 
+# Cache directories
+.cache/
+
 # AI Tools
 .opencode/
 ai/

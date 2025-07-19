@@ -3,6 +3,8 @@
  */
 
 import { randomUUID } from "node:crypto";
+import type { CacheConfig } from "./cache.config.js";
+import { defaultCacheConfig } from "./cache.config.js";
 
 export interface ServerConfig {
 	/** Server name for MCP identification */
@@ -17,6 +19,8 @@ export interface ServerConfig {
 	allowedHosts: string[];
 	/** Session ID generator function */
 	sessionIdGenerator: () => string;
+	/** Cache configuration */
+	cache: CacheConfig;
 }
 
 export interface HttpTransportConfig {
@@ -35,6 +39,7 @@ export const defaultServerConfig: ServerConfig = {
 	enableDnsRebindingProtection: false, // Disabled by default for backwards compatibility
 	allowedHosts: ["127.0.0.1"],
 	sessionIdGenerator: () => randomUUID(),
+	cache: defaultCacheConfig,
 };
 
 /**

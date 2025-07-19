@@ -3,6 +3,7 @@
  */
 
 import type { Server } from "node:http";
+import { GitCache } from "@cache/index.js";
 import type { ServerConfig } from "@config/server.config.js";
 import { defaultServerConfig } from "@config/server.config.js";
 import {
@@ -28,10 +29,13 @@ export class HeroUiMcpApplication implements Application {
 	private server: Server | null = null;
 	private sessionManager: SessionTransportManager;
 	private routeHandlers!: McpRouteHandlers;
+	private gitCache: GitCache;
+	private cacheInitialized = false;
 
 	constructor(private readonly config: ServerConfig = defaultServerConfig) {
 		this.app = express();
 		this.sessionManager = new SessionTransportManager();
+		this.gitCache = new GitCache(this.config.cache);
 		this.setupApplication();
 	}
 
@@ -39,25 +43,35 @@ export class HeroUiMcpApplication implements Application {
 	 * Start the application
 	 */
 	async start(): Promise<void> {
-		return new Promise((resolve, reject) => {
-			try {
-				this.server = this.app.listen(this.config.port, () => {
-					logger.info(`HeroUI MCP Server running on port ${this.config.port}`);
-					logger.info(
-						`Server name: ${this.config.name} v${this.config.version}`,
-					);
-					resolve();
-				});
+		try {
+			// Initialize cache before starting the server
+			await this.initializeCache();
 
-				this.server.on("error", (error: Error) => {
-					logger.error("Server error:", error);
+			return new Promise((resolve, reject) => {
+				try {
+					this.server = this.app.listen(this.config.port, () => {
+						logger.info(
+							`HeroUI MCP Server running on port ${this.config.port}`,
+						);
+						logger.info(
+							`Server name: ${this.config.name} v${this.config.version}`,
+						);
+						resolve();
+					});
+
+					this.server.on("error", (error: Error) => {
+						logger.error("Server error:", error);
+						reject(error);
+					});
+				} catch (error) {
+					logger.error("Failed to start server:", error);
 					reject(error);
-				});
-			} catch (error) {
-				logger.error("Failed to start server:", error);
-				reject(error);
-			}
-		});
+				}
+			});
+		} catch (error) {
+			logger.error("Failed to initialize application:", error);
+			throw error;
+		}
 	}
 
 	/**
@@ -77,6 +91,29 @@ export class HeroUiMcpApplication implements Application {
 			// Clean up session manager
 			this.sessionManager.shutdown();
 		});
+	}
+
+	/**
+	 * Initialize the HeroUI repository cache
+	 */
+	private async initializeCache(): Promise<void> {
+		if (this.cacheInitialized) {
+			logger.debug("Cache already initialized, skipping");
+			return;
+		}
+
+		logger.info("Initializing HeroUI repository cache...");
+		const result = await this.gitCache.initializeCache();
+
+		if (result.success) {
+			this.cacheInitialized = true;
+			logger.info("Cache initialization completed successfully");
+		} else {
+			logger.warn("Cache initialization failed - continuing without cache", {
+				error: result.message,
+			});
+			// Note: We continue startup even if cache fails for graceful degradation
+		}
 	}
 
 	/**
@@ -139,14 +176,28 @@ export class HeroUiMcpApplication implements Application {
 	 */
 	private setupRoutes(): void {
 		// Health check endpoint
-		this.app.get("/health", (_req, res) => {
-			res.json({
-				status: "healthy",
-				name: this.config.name,
-				version: this.config.version,
-				timestamp: new Date().toISOString(),
-				sessions: this.sessionManager.getSessionCount(),
-			});
+		this.app.get("/health", async (_req, res) => {
+			try {
+				const cacheStatus = await this.gitCache.checkCacheStatus();
+				res.json({
+					status: "healthy",
+					name: this.config.name,
+					version: this.config.version,
+					timestamp: new Date().toISOString(),
+					sessions: this.sessionManager.getSessionCount(),
+					cache: {
+						initialized: this.cacheInitialized,
+						valid: cacheStatus.isValid,
+						lastChecked: cacheStatus.lastChecked,
+					},
+				});
+			} catch (error) {
+				logger.error("Health check failed:", error);
+				res.status(500).json({
+					status: "error",
+					message: "Health check failed",
+				});
+			}
 		});
 
 		// Main MCP endpoints
@@ -218,5 +269,19 @@ export class HeroUiMcpApplication implements Application {
 	 */
 	getSessionManager(): SessionTransportManager {
 		return this.sessionManager;
+	}
+
+	/**
+	 * Get git cache instance (for testing)
+	 */
+	getGitCache(): GitCache {
+		return this.gitCache;
+	}
+
+	/**
+	 * Check if cache is initialized
+	 */
+	isCacheInitialized(): boolean {
+		return this.cacheInitialized;
 	}
 }

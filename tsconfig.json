@@ -14,6 +14,7 @@
 		"declarationMap": true,
 		"sourceMap": true,
 		"paths": {
+			"@cache/*": ["./src/cache/*"],
 			"@config/*": ["./src/config/*"],
 			"@http/*": ["./src/http/*"],
 			"@resources/*": ["./src/resources/*"],

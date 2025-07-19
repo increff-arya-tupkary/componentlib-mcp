@@ -130,3 +130,22 @@ export class ValidationError extends McpServerError {
 		this.name = "ValidationError";
 	}
 }
+
+export class CacheError extends McpServerError {
+	constructor(message: string, data?: Record<string, unknown>) {
+		super(message, -32003, data);
+		this.name = "CacheError";
+	}
+}
+
+export class GitOperationError extends CacheError {
+	constructor(
+		message: string,
+		public operation: string,
+		public exitCode?: number,
+		public stderr?: string,
+	) {
+		super(message, { operation, exitCode, stderr });
+		this.name = "GitOperationError";
+	}
+}
