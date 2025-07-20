@@ -8,6 +8,7 @@
  */
 
 import { logger } from "@utils/logger.js";
+import { filterMdxContent } from "@utils/mdx-processor.js";
 
 /**
  * Represents a parsed section from MDX content
@@ -45,7 +46,9 @@ export interface SectionMatchOptions {
  * @returns Array of parsed sections
  */
 export function parseAllSections(content: string): MdxSection[] {
-	const lines = content.split("\n");
+	// Apply MDX content filtering before parsing
+	const filteredContent = filterMdxContent(content);
+	const lines = filteredContent.split("\n");
 	const sections: MdxSection[] = [];
 
 	for (let i = 0; i < lines.length; i++) {
@@ -99,7 +102,8 @@ export function extractSections(
 	sectionNames: string[],
 	options: SectionMatchOptions = {},
 ): MdxSection[] {
-	const allSections = parseAllSections(content);
+	const filteredContent = filterMdxContent(content);
+	const allSections = parseAllSections(filteredContent);
 	const matchedSections: MdxSection[] = [];
 
 	for (const sectionName of sectionNames) {
@@ -230,7 +234,9 @@ export function extractSectionWithSubsections(
 	includeSubsections: boolean = true,
 	options: SectionMatchOptions = {},
 ): string | null {
-	const sections = parseAllSections(content);
+	// Apply MDX content filtering before processing
+	const filteredContent = filterMdxContent(content);
+	const sections = parseAllSections(filteredContent);
 	const targetSection = findSection(sections, sectionName, options);
 
 	if (!targetSection) {
@@ -243,7 +249,7 @@ export function extractSectionWithSubsections(
 	}
 
 	// Find all subsections that belong to this section
-	const lines = content.split("\n");
+	const lines = filteredContent.split("\n");
 	let endIndex = targetSection.endLine;
 
 	// Look for the next section at the same level or higher

@@ -15,7 +15,9 @@ import { McpRouteHandlers } from "@http/routes/mcp-routes.js";
 import { GreetingResource } from "@resources/examples/greeting-resource.js";
 import { ResourceRegistryImpl } from "@resources/registry.js";
 import { McpServerFactory } from "@server/mcp-server.factory.js";
+import { GetComponentAccessibilityTool } from "@tools/components/get-component-accessibility";
 import { GetComponentApiTool } from "@tools/components/get-component-api";
+import { GetComponentDataAttributesTool } from "@tools/components/get-component-data-attributes";
 import { GetComponentDocsTool } from "@tools/components/get-component-docs";
 import { GetComponentSlotsTool } from "@tools/components/get-component-slots";
 import { GetComponentUsageTool } from "@tools/components/get-component-usage";
@@ -164,6 +166,8 @@ export class HeroUiMcpApplication implements Application {
 		toolRegistry.registerToolClass(new GetComponentUsageTool());
 		toolRegistry.registerToolClass(new GetComponentApiTool());
 		toolRegistry.registerToolClass(new GetComponentSlotsTool());
+		toolRegistry.registerToolClass(new GetComponentDataAttributesTool());
+		toolRegistry.registerToolClass(new GetComponentAccessibilityTool());
 
 		// Register default resources
 		resourceRegistry.registerResourceClass(new GreetingResource());
