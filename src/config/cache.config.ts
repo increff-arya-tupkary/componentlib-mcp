@@ -33,7 +33,10 @@ export const defaultCacheConfig: CacheConfig = {
 	heroUiRepoUrl: "https://github.com/heroui-inc/heroui.git",
 	heroUiRepoBranch: "canary",
 	heroUiCacheDir: "heroui",
-	heroUiSparseCheckoutPaths: ["apps/docs/content/docs"],
+	heroUiSparseCheckoutPaths: [
+		"apps/docs/content/docs",
+		"apps/docs/content/components",
+	],
 	gitTimeoutMs: 300000, // 5 minutes
 	gitMaxRetries: 3,
 	gitRetryIntervalMs: 2000, // 2 seconds
@@ -52,4 +55,11 @@ export function getHeroUiCachePath(config: CacheConfig): string {
  */
 export function getHeroUiDocsPath(config: CacheConfig): string {
 	return path.join(getHeroUiCachePath(config), "apps/docs/content/docs");
+}
+
+/**
+ * Get the full path to the HeroUI components directory
+ */
+export function getHeroUiComponentsPath(config: CacheConfig): string {
+	return path.join(getHeroUiCachePath(config), "apps/docs/content/components");
 }

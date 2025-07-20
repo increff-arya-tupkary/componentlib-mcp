@@ -2,7 +2,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { defaultCacheConfig, getHeroUiDocsPath } from "@config/cache.config.js";
 import { BaseTool } from "@tools/base-tool.js";
+import { replaceCodeDemoWithCode } from "@utils/codedemo-processor.js";
 import { logger } from "@utils/logger.js";
+import { filterMdxContent } from "@utils/mdx-processor.js";
 import z from "zod";
 
 export class GetComponentDocsTool extends BaseTool {
@@ -13,33 +15,6 @@ export class GetComponentDocsTool extends BaseTool {
 	readonly inputSchema = {
 		componentName: z.string().min(1, "Component name is required"),
 	};
-
-	/**
-	 * Filter out unwanted MDX elements from the documentation content
-	 */
-	private filterMdxContent(content: string): string {
-		let filteredContent = content;
-
-		// Remove PackageManagers component
-		filteredContent = filteredContent.replace(
-			/<PackageManagers[\s\S]*?\/>/g,
-			"",
-		);
-
-		// Remove CarbonAd component
-		filteredContent = filteredContent.replace(/<CarbonAd\s*\/>/g, "");
-
-		// Remove ComponentLinks component
-		filteredContent = filteredContent.replace(
-			/<ComponentLinks[\s\S]*?\/>/g,
-			"",
-		);
-
-		// Clean up any extra whitespace left behind
-		filteredContent = filteredContent.replace(/\n\s*\n\s*\n/g, "\n\n");
-
-		return filteredContent.trim();
-	}
 
 	async execute(
 		params: z.infer<z.ZodObject<typeof this.inputSchema>>,
@@ -86,12 +61,15 @@ export class GetComponentDocsTool extends BaseTool {
 			let mdxContent = await fs.readFile(componentFilePath, "utf-8");
 
 			// Filter out unwanted MDX elements
-			mdxContent = this.filterMdxContent(mdxContent);
+			mdxContent = filterMdxContent(mdxContent);
 
-			logger.debug("Successfully read and filtered component documentation", {
+			// Replace CodeDemo components with actual code
+			mdxContent = await replaceCodeDemoWithCode(mdxContent);
+
+			logger.debug("Successfully read and processed component documentation", {
 				componentName,
 				originalLength: mdxContent.length,
-				filteredLength: mdxContent.length,
+				processedLength: mdxContent.length,
 			});
 
 			return {
