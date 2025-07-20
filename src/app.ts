@@ -16,6 +16,7 @@ import { GreetingResource } from "@resources/examples/greeting-resource.js";
 import { ResourceRegistryImpl } from "@resources/registry.js";
 import { McpServerFactory } from "@server/mcp-server.factory.js";
 import { GetComponentDocsTool } from "@tools/components/get-component-docs";
+import { GetComponentUsageTool } from "@tools/components/get-component-usage";
 import { ListComponentsTool } from "@tools/components/list-components";
 import { ToolRegistryImpl } from "@tools/registry.js";
 import { SessionTransportManager } from "@transport/session-manager.js";
@@ -158,6 +159,7 @@ export class HeroUiMcpApplication implements Application {
 		// Register default tools
 		toolRegistry.registerToolClass(new ListComponentsTool());
 		toolRegistry.registerToolClass(new GetComponentDocsTool());
+		toolRegistry.registerToolClass(new GetComponentUsageTool());
 
 		// Register default resources
 		resourceRegistry.registerResourceClass(new GreetingResource());
