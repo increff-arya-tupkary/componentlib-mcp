@@ -31,7 +31,7 @@ export function removeComponentLinksComponents(content: string): string {
  * Replaces multiple consecutive newlines with just two newlines
  */
 export function cleanUpWhitespace(content: string): string {
-	return content.replace(/\n\s*\n\s*\n/g, "\n\n");
+	return content.replace(/\n\s*\n\s*\n+/g, "\n\n");
 }
 
 /**
@@ -61,7 +61,7 @@ export function removeFirstImportLine(content: string): string {
  * Removes the "## Installation" line which is typically not needed in processed docs
  */
 export function removeInstallationHeader(content: string): string {
-	return content.replace(/^##\s+Installation\s*\n?/m, "");
+	return content.replace(/^(\s*)##\s*Installation\s*\n/m, "");
 }
 
 /**
@@ -69,7 +69,7 @@ export function removeInstallationHeader(content: string): string {
  * Removes all <Spacer /> components which are layout utilities not needed in processed docs
  */
 export function removeSpacerComponents(content: string): string {
-	return content.replace(/<Spacer\s*\/>/g, "");
+	return content.replace(/^(\s*)<Spacer\s*\/>\s*$/gm, "");
 }
 
 /**
