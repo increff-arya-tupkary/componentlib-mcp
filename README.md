@@ -37,8 +37,8 @@ This server is built on two key concepts:
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/T-Hash06/heroui-mcp.git
-    cd heroui-mcp
+    git clone https://github.com/increff-arya-tupkary/componentlib-mcp.git
+    cd componentlib-mcp
     ```
 
 2.  **Install dependencies**:
@@ -263,8 +263,8 @@ npm run test:coverage
 ## 🔗 Links
 
 -   [Model Context Protocol](https://modelcontextprotocol.io/)
--   [Project Issues](https://github.com/T-Hash06/heroui-mcp/issues)
--   [Project Discussions](https://github.com/T-Hash06/heroui-mcp/discussions)
+-   [Project Issues](https://github.com/increff-arya-tupkary/componentlib-mcp/issues)
+-   [Project Discussions](https://github.com/increff-arya-tupkary/componentlib-mcp/discussions)
 
 ---
 
@@ -272,6 +272,6 @@ npm run test:coverage
   <p>Made with ❤️ for the open-source community</p>
   <p>
     <a href="https://modelcontextprotocol.io/">MCP</a> •
-    <a href="https://github.com/T-Hash06/heroui-mcp">GitHub</a>
+    <a href="https://github.com/increff-arya-tupkary/componentlib-mcp">GitHub</a>
   </p>
 </div>
