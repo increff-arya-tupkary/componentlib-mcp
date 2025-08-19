@@ -11,8 +11,12 @@ export interface ServerConfig {
 	name: string;
 	/** Server version */
 	version: string;
+	/** Server description */
+	description: string;
 	/** HTTP port to listen on */
 	port: number;
+	/** HTTP host to listen on */
+	host: string;
 	/** Enable DNS rebinding protection */
 	enableDnsRebindingProtection: boolean;
 	/** Allowed hosts for DNS rebinding protection */
@@ -33,9 +37,11 @@ export interface HttpTransportConfig {
  * Default server configuration
  */
 export const defaultServerConfig: ServerConfig = {
-	name: "heroui-mcp-server",
+	port: 3000,
+	host: "localhost",
+	name: "mcp-server",
 	version: "1.0.0",
-	port: Number(process.env.PORT) || 3000,
+	description: "A Model Context Protocol (MCP) server",
 	enableDnsRebindingProtection: false, // Disabled by default for backwards compatibility
 	allowedHosts: ["127.0.0.1"],
 	sessionIdGenerator: () => randomUUID(),

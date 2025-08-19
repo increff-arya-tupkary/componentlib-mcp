@@ -6,8 +6,11 @@ import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
-import type { CacheConfig } from "@config/cache.config.js";
-import { getHeroUiCachePath } from "@config/cache.config.js";
+import {
+	type CacheConfig,
+	defaultCacheConfig,
+	getRepoCachePath,
+} from "@config/cache.config.js";
 import { logger } from "@utils/logger.js";
 
 const execFileAsync = promisify(execFile);
@@ -66,7 +69,7 @@ export class GitCache {
 	 * Check the status of the HeroUI cache
 	 */
 	async checkCacheStatus(): Promise<GitCacheStatus> {
-		const cachePath = getHeroUiCachePath(this.config);
+		const cachePath = getRepoCachePath(this.config);
 		const status: GitCacheStatus = {
 			exists: false,
 			isGitRepository: false,
@@ -118,7 +121,7 @@ export class GitCache {
 	 * Clone the HeroUI repository with sparse checkout
 	 */
 	async cloneRepository(): Promise<GitCacheOperationResult> {
-		const cachePath = getHeroUiCachePath(this.config);
+		const cachePath = getRepoCachePath(this.config);
 		const parentDir = path.dirname(cachePath);
 
 		try {
@@ -134,9 +137,9 @@ export class GitCache {
 			}
 
 			// Clone repository with no checkout initially
-			logger.info("Cloning HeroUI repository...", {
-				url: this.config.heroUiRepoUrl,
-				branch: this.config.heroUiRepoBranch,
+			logger.info("Cloning repository...", {
+				url: this.config.repoUrl,
+				branch: this.config.repoBranch,
 				target: cachePath,
 			});
 
@@ -146,8 +149,8 @@ export class GitCache {
 					"--no-checkout",
 					"--filter=blob:none",
 					"--branch",
-					this.config.heroUiRepoBranch,
-					this.config.heroUiRepoUrl,
+					this.config.repoBranch,
+					this.config.repoUrl,
 					cachePath,
 				],
 				parentDir,
@@ -162,7 +165,7 @@ export class GitCache {
 			// Set sparse checkout paths
 			await this.executeGitCommand(
 				["sparse-checkout", "set"].concat(
-					this.config.heroUiSparseCheckoutPaths,
+					this.config.sparseCheckoutPaths,
 				),
 				cachePath,
 			);
@@ -170,9 +173,9 @@ export class GitCache {
 			// Checkout the files
 			await this.executeGitCommand(["checkout"], cachePath);
 
-			logger.info("Successfully cloned and configured HeroUI repository", {
+			logger.info("Successfully cloned and configured repository", {
 				cachePath,
-				sparseCheckoutPaths: this.config.heroUiSparseCheckoutPaths,
+				sparseCheckoutPaths: this.config.sparseCheckoutPaths,
 			});
 
 			return {
@@ -194,7 +197,7 @@ export class GitCache {
 	 * Update the existing repository cache
 	 */
 	async updateRepository(): Promise<GitCacheOperationResult> {
-		const cachePath = getHeroUiCachePath(this.config);
+		const cachePath = getRepoCachePath(this.config);
 
 		try {
 			const status = await this.checkCacheStatus();
@@ -205,26 +208,26 @@ export class GitCache {
 				return await this.cloneRepository();
 			}
 
-			logger.info("Updating HeroUI repository cache...", { cachePath });
+			logger.info("Updating repository cache...", { cachePath });
 
 			// Fetch latest changes
 			await this.executeGitCommand(["fetch", "origin"], cachePath);
 
 			// Reset to latest origin branch
 			await this.executeGitCommand(
-				["reset", "--hard", `origin/${this.config.heroUiRepoBranch}`],
+				["reset", "--hard", `origin/${this.config.repoBranch}`],
 				cachePath,
 			);
 
 			// Reapply sparse checkout in case patterns changed
 			await this.executeGitCommand(
 				["sparse-checkout", "set"].concat(
-					this.config.heroUiSparseCheckoutPaths,
+					this.config.sparseCheckoutPaths,
 				),
 				cachePath,
 			);
 
-			logger.info("Successfully updated HeroUI repository cache", {
+			logger.info("Successfully updated repository cache", {
 				cachePath,
 			});
 
@@ -247,7 +250,7 @@ export class GitCache {
 	 * Initialize or update the cache
 	 */
 	async initializeCache(): Promise<GitCacheOperationResult> {
-		logger.info("Initializing HeroUI cache...");
+		logger.info("Initializing cache...");
 
 		try {
 			if (this.config.validateGitOnStartup) {
@@ -278,10 +281,10 @@ export class GitCache {
 	 * Clean up the cache directory
 	 */
 	async clearCache(): Promise<GitCacheOperationResult> {
-		const cachePath = getHeroUiCachePath(this.config);
+		const cachePath = getRepoCachePath(this.config);
 
 		try {
-			logger.info("Clearing HeroUI cache...", { cachePath });
+			logger.info("Clearing cache...", { cachePath });
 			await fs.rm(cachePath, { recursive: true, force: true });
 			logger.info("Cache cleared successfully", { cachePath });
 

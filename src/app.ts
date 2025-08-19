@@ -15,6 +15,11 @@ import { McpRouteHandlers } from "@http/routes/mcp-routes.js";
 import { GreetingResource } from "@resources/examples/greeting-resource.js";
 import { ResourceRegistryImpl } from "@resources/registry.js";
 import { McpServerFactory } from "@server/mcp-server.factory.js";
+import {
+	pluginManager,
+} from "@plugins/plugin-manager.js";
+import fs from "node:fs";
+import path from "node:path";
 import { GetComponentAccessibilityTool } from "@tools/components/get-component-accessibility.js";
 import { GetComponentApiTool } from "@tools/components/get-component-api.js";
 import { GetComponentDataAttributesTool } from "@tools/components/get-component-data-attributes.js";
@@ -30,7 +35,7 @@ import { logger } from "@utils/logger.js";
 import type { Express } from "express";
 import express from "express";
 
-export class HeroUiMcpApplication implements Application {
+export class McpApplication implements Application {
 	private app: Express;
 	private server: Server | null = null;
 	private sessionManager: SessionTransportManager;
@@ -41,7 +46,15 @@ export class HeroUiMcpApplication implements Application {
 	constructor(private readonly config: ServerConfig = defaultServerConfig) {
 		this.app = express();
 		this.sessionManager = new SessionTransportManager();
-		this.gitCache = new GitCache(this.config.cache);
+		const configPath = path.resolve(process.cwd(), "mcp.config.json");
+		if (fs.existsSync(configPath)) {
+			const mcpConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+			if (mcpConfig.activePlugin) {
+				pluginManager.setActivePlugin(mcpConfig.activePlugin);
+			}
+		}
+		const cacheConfig = pluginManager.getActivePluginConfig();
+		this.gitCache = new GitCache(cacheConfig);
 		this.setupApplication();
 	}
 
@@ -57,7 +70,7 @@ export class HeroUiMcpApplication implements Application {
 				try {
 					this.server = this.app.listen(this.config.port, () => {
 						logger.info(
-							`HeroUI MCP Server running on port ${this.config.port}`,
+							`MCP Server running on port ${this.config.port}`,
 						);
 						logger.info(
 							`Server name: ${this.config.name} v${this.config.version}`,
@@ -100,7 +113,7 @@ export class HeroUiMcpApplication implements Application {
 	}
 
 	/**
-	 * Initialize the HeroUI repository cache
+	 * Initialize the repository cache
 	 */
 	private async initializeCache(): Promise<void> {
 		if (this.cacheInitialized) {
@@ -108,7 +121,7 @@ export class HeroUiMcpApplication implements Application {
 			return;
 		}
 
-		logger.info("Initializing HeroUI repository cache...");
+		logger.info("Initializing repository cache...");
 		const result = await this.gitCache.initializeCache();
 
 		if (result.success) {

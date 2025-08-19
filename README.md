@@ -1,53 +1,60 @@
-# HeroUI MCP Server
+# Extensible MCP Server for Component Libraries
 
 [![npm version](https://img.shields.io/npm/v/heroui-mcp.svg)](https://www.npmjs.com/package/heroui-mcp)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A high-quality, open-source Model Context Protocol (MCP) server that provides AI agents with comprehensive context and tooling for the [HeroUI](https://heroui.com/) component library. This server bridges AI systems and HeroUI, enabling intelligent assistance for developers working with HeroUI components.
+A high-quality, open-source Model Context Protocol (MCP) server that provides AI agents with comprehensive context and tooling for virtually any component library. This server is designed with a plugin-based architecture, making it easy to extend and adapt to different documentation sources.
+
+## ✨ Core Concepts
+
+This server is built on two key concepts:
+
+-   **Plugin Architecture**: The server can be extended to support different component libraries by creating plugins. Each plugin provides the necessary configuration to locate and cache the documentation for a specific library. The active plugin is determined by a simple configuration file, allowing you to switch between different libraries without changing the core code.
+-   **Git-Based Caching**: To ensure fast and efficient access to documentation, the server clones the component library's repository into a local cache. This approach avoids the need for external APIs and allows the server to work offline after the initial cache is built.
 
 ## 🚀 Features
 
-- **Component Discovery**: List and explore all available HeroUI components
-- **Documentation Access**: Retrieve comprehensive component documentation and usage examples
-- **API Reference**: Access detailed component props, slots, and data attributes
-- **Accessibility Information**: Get accessibility guidelines and best practices for each component
-- **Usage Patterns**: Learn common implementation patterns and best practices
-- **TypeScript Support**: Full TypeScript support with comprehensive type definitions
-- **Caching System**: Efficient Git-based caching for fast documentation retrieval
-- **RESTful API**: Clean HTTP endpoints for easy integration
+-   **Extensible Plugin System**: Easily add support for new component libraries.
+-   **Component Discovery**: List and explore all available components for the active library.
+-   **Documentation Access**: Retrieve comprehensive component documentation and usage examples.
+-   **API Reference**: Access detailed component props, slots, and data attributes.
+-   **Accessibility Information**: Get accessibility guidelines and best practices for each component.
+-   **Usage Patterns**: Learn common implementation patterns and best practices.
+-   **TypeScript Support**: Full TypeScript support with comprehensive type definitions.
+-   **Caching System**: Efficient Git-based caching for fast documentation retrieval.
+-   **RESTful API**: Clean HTTP endpoints for easy integration.
 
 ## 📋 Prerequisites
 
-- **Node.js** 18.0 or higher
-- **pnpm** (recommended) or npm
-- **Git** (for repository caching)
-- **Bun** (optional, recommended for faster development) or **tsx** for TypeScript execution
+-   **Node.js** 18.0 or higher
+-   **npm** (or your preferred package manager)
+-   **Git** (for repository caching)
 
 ## 🛠️ Installation
 
 ### From Source
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/T-Hash06/heroui-mcp.git
-   cd heroui-mcp
-   ```
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/T-Hash06/heroui-mcp.git
+    cd heroui-mcp
+    ```
 
-2. **Install dependencies**:
-   ```bash
-   pnpm install
-   ```
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-3. **Build the project**:
-   ```bash
-   pnpm build
-   ```
+3.  **Build the project**:
+    ```bash
+    npm run build
+    ```
 
-4. **Start the server**:
-   ```bash
-   pnpm start
-   ```
+4.  **Start the server**:
+    ```bash
+    npm start
+    ```
 
 The server will start on `http://localhost:3000` by default.
 
@@ -57,152 +64,181 @@ The server will start on `http://localhost:3000` by default.
 
 Once the server is running, the best way to interact with it is through the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) tool, which provides a user-friendly interface for exploring and testing MCP servers.
 
-1. **Install the MCP Inspector**:
-   ```bash
-   npx @modelcontextprotocol/inspector
-   ```
+1.  **Install the MCP Inspector**:
+    ```bash
+    npx @modelcontextprotocol/inspector
+    ```
 
-2. **Connect to your server**:
-   - Open the MCP Inspector in your browser
-   - Add your server URL: `http://localhost:3000`
-   - Explore the available tools and resources interactively
+2.  **Connect to your server**:
+    -   Open the MCP Inspector in your browser
+    -   Add your server URL: `http://localhost:3000`
+    -   Explore the available tools and resources interactively
 
 ### Available Tools
 
-The server provides the following MCP tools:
+The server provides the following MCP tools, which will operate on the currently active component library:
 
-| Tool | Description |
-|------|-------------|
-| `list_components` | List all available HeroUI components |
-| `get_component_docs` | Get comprehensive documentation for a component |
-| `get_component_api` | Get API reference (props, methods, events) |
-| `get_component_slots` | Get slot information for a component |
-| `get_component_data_attributes` | Get data attributes for a component |
-| `get_component_accessibility` | Get accessibility information and guidelines |
-| `get_component_usage` | Get usage examples and patterns |
+| Tool                          | Description                                       |
+| ----------------------------- | ------------------------------------------------- |
+| `list_components`             | List all available components                     |
+| `get_component_docs`          | Get comprehensive documentation for a component   |
+| `get_component_api`           | Get API reference (props, methods, events)        |
+| `get_component_slots`         | Get slot information for a component              |
+| `get_component_data_attributes` | Get data attributes for a component               |
+| `get_component_accessibility` | Get accessibility information and guidelines      |
+| `get_component_usage`         | Get usage examples and patterns                   |
 
-### Example: Exploring Components
+## 🔧 Configuration
 
-Using the MCP Inspector, you can:
+The active component library is determined by a configuration file in the root of the project.
 
-1. **Browse available tools** - See all component-related tools in a visual interface
-2. **Test tools interactively** - Run tools like `list_components` or `get_component_docs` with real-time results
-3. **Explore component data** - Get detailed information about any HeroUI component
-4. **View formatted output** - See documentation and API information in a readable format
+### `mcp.config.json`
 
-The MCP Inspector provides the best experience for exploring the server's capabilities without needing to write code or use command-line tools.
+This file specifies which plugin the server should use. The `activePlugin` property should correspond to the name of a plugin directory in `src/plugins`.
+
+```json
+{
+  "activePlugin": "heroui"
+}
+```
+
+To switch to a different component library, simply change the value of `activePlugin` and restart the server.
+
+## 🔌 Creating a Plugin
+
+Adding support for a new component library is easy. Here’s how to create a plugin for a hypothetical library called `AwesomeUI`.
+
+### 1. Create the Plugin Directory
+
+In the `src/plugins` directory, create a new folder for your plugin. The name of this folder will be used as the plugin's identifier.
+
+```bash
+mkdir src/plugins/awesome-ui
+```
+
+### 2. Create the Configuration File
+
+Inside the new directory, create a configuration file named `[plugin-name].config.ts`. For this example, it would be `src/plugins/awesome-ui/awesome-ui.config.ts`.
+
+### 3. Define the Configuration
+
+In this file, you'll specify the details of the component library's documentation source. The configuration should export an object that matches the `Partial<CacheConfig>` interface.
+
+Here’s an example for `AwesomeUI`:
+
+```typescript
+import { type CacheConfig } from "../../config/cache.config";
+
+export const awesomeUiCacheConfig: Partial<CacheConfig> = {
+  // The URL of the component library's git repository
+  repoUrl: "https://github.com/awesome-ui/awesome-ui.git",
+
+  // The branch to clone
+  repoBranch: "main",
+
+  // A unique name for the cache directory
+  cacheDirName: "awesome-ui",
+
+  // Paths within the repo to check out for documentation
+  sparseCheckoutPaths: [
+    "packages/docs/content/components",
+    "packages/docs/content/guides"
+  ],
+};
+```
+
+### 4. Activate the Plugin
+
+Update `mcp.config.json` to use your new plugin:
+
+```json
+{
+  "activePlugin": "awesome-ui"
+}
+```
+
+### 5. Restart the Server
+
+Finally, rebuild and restart the server to apply the changes.
+
+```bash
+npm run build && npm start
+```
+
+The server will now provide context and tooling for the `AwesomeUI` component library.
 
 ## 🏗️ Development
 
 ### Development Setup
 
-1. **Install dependencies**:
-   ```bash
-   pnpm install
-   ```
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-2. **Start development server** (choose one option):
+2.  **Start development server**:
+    ```bash
+    npm run dev
+    ```
 
-   **Option A: Using Bun (recommended for faster startup)**
-   ```bash
-   # Install Bun if you don't have it
-   curl -fsSL https://bun.sh/install | bash
-   
-   # Start development server
-   pnpm dev
-   ```
+3.  **For production deployment**:
+    ```bash
+    # Build the project
+    npm run build
+    
+    # Start production server
+    npm start
+    ```
 
-   **Option B: Using tsx (if you prefer Node.js)**
-   ```bash
-   # Install tsx globally or use npx
-   npm install -g tsx
-   
-   # Run directly with tsx
-   npx tsx src/index.ts
-   ```
+4.  **Run tests**:
+    ```bash
+    npm test
+    ```
 
-3. **For production deployment**:
-   ```bash
-   # Build the project
-   pnpm build
-   
-   # Start production server
-   pnpm start
-   ```
+5.  **Format code**:
+    ```bash
+    npm run format
+    ```
 
-4. **Run tests**:
-   ```bash
-   pnpm test
-   ```
-
-5. **Format code**:
-   ```bash
-   pnpm format
-   ```
-
-6. **Check code quality**:
-   ```bash
-   pnpm check
-   ```
+6.  **Check code quality**:
+    ```bash
+    npm run check
+    ```
 
 ### Project Structure
 
 ```
-src/
-├── app.ts                # Main application setup
-├── index.ts              # Entry point
-├── cache/                # Git caching system
-├── config/               # Configuration management
-├── http/                 # HTTP server and routes
-├── resources/            # MCP resources
-├── server/               # MCP server factory
-├── tools/                # MCP tools implementation
-│   └── components/       # HeroUI component tools
-├── transport/            # Session management
-├── types/                # TypeScript type definitions
-└── utils/                # Utility functions
+.
+├── mcp.config.json       # Server configuration for active plugin
+└── src/
+    ├── app.ts            # Main application setup
+    ├── index.ts          # Entry point
+    ├── cache/            # Git caching system
+    ├── config/           # Configuration management
+    ├── http/             # HTTP server and routes
+    ├── plugins/          # Plugin directory
+    │   └── heroui/       # Example plugin for HeroUI
+    ├── resources/        # MCP resources
+    ├── server/           # MCP server factory
+    ├── tools/            # MCP tools implementation
+    ├── transport/        # Session management
+    ├── types/            # TypeScript type definitions
+    └── utils/            # Utility functions
 ```
 
 ### Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `pnpm dev` | Start development server with Bun (fast TypeScript execution) |
-| `pnpm build` | Build the project for production (TypeScript compilation) |
-| `pnpm start` | Start the production server (requires build first) |
-| `pnpm test` | Run tests in watch mode |
-| `pnpm test:run` | Run tests once |
-| `pnpm test:coverage` | Run tests with coverage report |
-| `pnpm check` | Run all quality checks (lint, type-check, test) |
-| `pnpm format` | Format code with Biome |
-| `pnpm lint` | Lint code with Biome |
-
-### Development vs Production
-
-- **Development**: Use `pnpm dev` (Bun) or `npx tsx src/index.ts` for fast TypeScript execution
-- **Production**: Use `pnpm build` then `pnpm start` for optimized compiled JavaScript
-
-## 🔧 Configuration
-
-The server can be configured through environment variables or configuration files:
-
-### Environment Variables
-
-```bash
-# Server configuration
-PORT=3000
-HOST=localhost
-
-# Cache configuration
-CACHE_DIR=./cache
-REPO_URL=https://github.com/heroui-inc/heroui.git
-BRANCH=main
-```
-
-### Configuration Files
-
-- `src/config/server.config.ts` - Server configuration
-- `src/config/cache.config.ts` - Cache configuration
+| Script             | Description                                                 |
+| ------------------ | ----------------------------------------------------------- |
+| `npm run dev`      | Start development server with `tsx` (fast TypeScript execution) |
+| `npm run build`    | Build the project for production (TypeScript compilation)   |
+| `npm run start`    | Start the production server (requires build first)          |
+| `npm run test`     | Run tests in watch mode                                     |
+| `npm run test:run` | Run tests once                                              |
+| `npm run test:coverage` | Run tests with coverage report                              |
+| `npm run check`    | Run all quality checks (lint, type-check, test)             |
+| `npm run format`   | Format code with Biome                                      |
+| `npm run lint`     | Lint code with Biome                                        |
 
 ## 🧪 Testing
 
@@ -210,87 +246,31 @@ The project uses [Vitest](https://vitest.dev/) for testing:
 
 ```bash
 # Run all tests
-pnpm test
+npm test
 
 # Run tests once
-pnpm test:run
+npm run test:run
 
 # Run tests with coverage
-pnpm test:coverage
-
-# Run specific test file
-pnpm test src/tools/components/list-components.test.ts
+npm run test:coverage
 ```
-
-## 🤝 Contributing
-
-### Quick Contribution Guide
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes**
-4. **Run quality checks**: `pnpm check`
-5. **Commit your changes**: `git commit -m 'Add amazing feature'`
-6. **Push to the branch**: `git push origin feature/amazing-feature`
-7. **Open a Pull Request**
-
-### Development Standards
-
-- Follow [Conventional Commits](https://www.conventionalcommits.org/)
-- Maintain TypeScript strict mode compliance
-- Write tests for new functionality
-- Ensure all quality checks pass (`pnpm check`)
-- Document new features and APIs
-
-## 🐞 Troubleshooting
-
-### Common Issues
-
-**Server won't start**
-- Check if the port is already in use
-- Verify Node.js version (18.0+ required)
-- Ensure all dependencies are installed
-
-**Cache initialization fails**
-- Check internet connection for Git repository access
-- Verify Git is installed and accessible
-- Check repository URL and branch configuration
-
-**Tool execution errors**
-- Ensure the HeroUI repository cache is initialized
-- Check component name spelling and case sensitivity
-- Verify the requested component exists in the documentation
-
-### Debug Mode
-
-Enable debug logging:
-
-```bash
-NODE_ENV=development pnpm dev
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- [HeroUI](https://heroui.com/) - The amazing component library this server supports
-- [Model Context Protocol](https://modelcontextprotocol.io/) - The protocol specification
+-   [HeroUI](https://heroui.com/) - The component library that inspired this project.
+-   [Model Context Protocol](https://modelcontextprotocol.io/) - The protocol specification.
 
 ## 🔗 Links
 
-- [HeroUI Documentation](https://heroui.com/)
-- [Model Context Protocol](https://modelcontextprotocol.io/)
-- [Project Issues](https://github.com/T-Hash06/heroui-mcp/issues)
-- [Project Discussions](https://github.com/T-Hash06/heroui-mcp/discussions)
+-   [Model Context Protocol](https://modelcontextprotocol.io/)
+-   [Project Issues](https://github.com/T-Hash06/heroui-mcp/issues)
+-   [Project Discussions](https://github.com/T-Hash06/heroui-mcp/discussions)
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ for the HeroUI community</p>
+  <p>Made with ❤️ for the open-source community</p>
   <p>
-    <a href="https://heroui.com/">HeroUI</a> •
     <a href="https://modelcontextprotocol.io/">MCP</a> •
     <a href="https://github.com/T-Hash06/heroui-mcp">GitHub</a>
   </p>

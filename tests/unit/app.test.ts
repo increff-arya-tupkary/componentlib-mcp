@@ -42,19 +42,19 @@ vi.mock("express", () => {
 	};
 });
 
-describe("HeroUiMcpApplication", () => {
+describe("McpApplication", () => {
 	// Simple smoke tests to verify the class can be instantiated and basic methods exist
 	it("should be defined and importable", async () => {
-		const { HeroUiMcpApplication } = await import("../../src/app.js");
-		expect(HeroUiMcpApplication).toBeDefined();
+		const { McpApplication } = await import("../../src/app.js");
+		expect(McpApplication).toBeDefined();
 	});
 
 	it("should have required methods", async () => {
-		const { HeroUiMcpApplication } = await import("../../src/app.js");
+		const { McpApplication } = await import("../../src/app.js");
 		const config = createTestServerConfig();
 
 		// Just check the class can be instantiated without detailed mocking
-		const app = new HeroUiMcpApplication(config);
+		const app = new McpApplication(config);
 
 		expect(typeof app.start).toBe("function");
 		expect(typeof app.stop).toBe("function");

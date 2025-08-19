@@ -9,10 +9,10 @@ import type { ServerConfig } from "../../src/config/server.config.js";
 // Mock cache config
 export const mockCacheConfig: CacheConfig = {
 	cacheDir: "/tmp/test-cache",
-	heroUiRepoUrl: "https://github.com/heroui-inc/heroui.git",
-	heroUiRepoBranch: "canary",
-	heroUiCacheDir: "heroui",
-	heroUiSparseCheckoutPaths: [
+	repoUrl: "https://github.com/heroui-inc/heroui.git",
+	repoBranch: "canary",
+	cacheDirName: "heroui",
+	sparseCheckoutPaths: [
 		"apps/docs/content/docs",
 		"apps/docs/content/components",
 	],
@@ -24,9 +24,11 @@ export const mockCacheConfig: CacheConfig = {
 
 // Mock server config
 export const mockServerConfig: ServerConfig = {
-	name: "test-heroui-mcp-server",
+	name: "test-mcp-server",
 	version: "1.0.0-test",
+	description: "A test MCP server",
 	port: 0, // Use random available port for tests
+	host: "localhost",
 	enableDnsRebindingProtection: false,
 	allowedHosts: ["127.0.0.1"],
 	sessionIdGenerator: () => "test-session-id",
@@ -40,7 +42,7 @@ export const createMockGitCache = () => ({
 		isValid: true,
 		lastChecked: new Date().toISOString(),
 	}),
-	getHeroUiCachePath: vi.fn().mockReturnValue("/tmp/test-heroui-cache"),
+	getRepoCachePath: vi.fn().mockReturnValue("/tmp/test-cache/heroui"),
 	isInitialized: vi.fn().mockReturnValue(true),
 });
 

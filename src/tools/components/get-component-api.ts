@@ -8,7 +8,8 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { defaultCacheConfig, getHeroUiDocsPath } from "@config/cache.config.js";
+import { defaultCacheConfig, getDocsPath } from "@config/cache.config.js";
+import { pluginManager } from "@plugins/plugin-manager.js";
 import { BaseTool } from "@tools/base-tool.js";
 import { replaceCodeDemoWithCode } from "@utils/codedemo-processor.js";
 import { logger } from "@utils/logger.js";
@@ -48,7 +49,8 @@ export class GetComponentApiTool extends BaseTool {
 
 		try {
 			// Get the path to the cached docs/components directory
-			const docsPath = getHeroUiDocsPath(defaultCacheConfig);
+			const cacheConfig = pluginManager.getActivePluginConfig();
+			const docsPath = getDocsPath(cacheConfig);
 			const componentsPath = path.join(docsPath, "components");
 			const componentFilePath = path.join(
 				componentsPath,

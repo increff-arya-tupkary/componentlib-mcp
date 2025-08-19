@@ -4,7 +4,7 @@
 
 import request from "supertest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { HeroUiMcpApplication } from "../../src/app.js";
+import { McpApplication } from "../../src/app.js";
 import { createTestServerConfig } from "../mocks/index.js";
 
 // Mock the GitCache
@@ -33,7 +33,7 @@ vi.mock("../../src/transport/session-manager.js", () => ({
 }));
 
 describe("HTTP Endpoints Integration", () => {
-	let app: HeroUiMcpApplication;
+	let app: McpApplication;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -47,7 +47,7 @@ describe("HTTP Endpoints Integration", () => {
 
 		// Create app with test config
 		const config = createTestServerConfig();
-		app = new HeroUiMcpApplication(config);
+		app = new McpApplication(config);
 	});
 
 	afterEach(async () => {

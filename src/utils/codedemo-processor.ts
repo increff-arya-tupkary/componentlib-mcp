@@ -9,9 +9,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
-	defaultCacheConfig,
-	getHeroUiComponentsPath,
-} from "@config/cache.config.js";
+	getComponentsPath,
+} from "../config/cache.config.js";
+import { pluginManager } from "../plugins/plugin-manager.js";
 import { logger } from "@utils/logger.js";
 import { cleanUpSvgTags } from "@utils/mdx-processor.js";
 
@@ -59,7 +59,8 @@ export async function readComponentCode(
 	componentPath: string,
 ): Promise<string | null> {
 	try {
-		const componentsPath = getHeroUiComponentsPath(defaultCacheConfig);
+		const cacheConfig = pluginManager.getActivePluginConfig();
+		const componentsPath = getComponentsPath(cacheConfig);
 		// Convert componentPath to kebab-case before constructing file path
 		const kebabComponentPath = toKebabCase(componentPath);
 		// Look for .raw.jsx files which contain the actual component examples

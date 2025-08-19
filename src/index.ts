@@ -1,21 +1,26 @@
 /**
- * Main entry point for HeroUI MCP Server
+ * Main entry point for the MCP Server
  */
 
 import { logger } from "@utils/logger.js";
-import { HeroUiMcpApplication } from "./app.js";
+import { McpApplication } from "./app.js";
 
 /**
  * Main function to start the application
  */
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
 	try {
-		const app = new HeroUiMcpApplication();
+		const app = new McpApplication();
 
 		// Handle graceful shutdown
 		const shutdown = async (signal: string) => {
 			logger.info(`Received ${signal}, shutting down gracefully`);
-			await app.stop();
+			try {
+				await app.stop();
+			} catch (error) {
+				logger.error("Error during shutdown:", error);
+				process.exit(1);
+			}
 			process.exit(0);
 		};
 
@@ -30,8 +35,10 @@ async function main(): Promise<void> {
 	}
 }
 
-// Start the application
-main().catch((error) => {
-	logger.error("Unhandled error in main:", error);
-	process.exit(1);
-});
+// Start the application if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+	main().catch((error) => {
+		logger.error("Unhandled error in main:", error);
+		process.exit(1);
+	});
+}

@@ -17,6 +17,7 @@
 			"@cache/*": ["./src/cache/*"],
 			"@config/*": ["./src/config/*"],
 			"@http/*": ["./src/http/*"],
+			"@plugins/*": ["./src/plugins/*"],
 			"@resources/*": ["./src/resources/*"],
 			"@server/*": ["./src/server/*"],
 			"@tools/*": ["./src/tools/*"],

@@ -11,7 +11,7 @@ const mockApp = {
 };
 
 vi.mock("../../src/app.js", () => ({
-	HeroUiMcpApplication: vi.fn().mockImplementation(() => mockApp),
+	McpApplication: vi.fn().mockImplementation(() => mockApp),
 }));
 
 // Mock logger
@@ -69,7 +69,8 @@ describe("Main Entry Point", () => {
 	describe("main function", () => {
 		it("should start the application successfully", async () => {
 			// Import the module to trigger main execution
-			await import("../../src/index.js");
+			const { main } = await import("../../src/index.js");
+			await main();
 
 			// Wait for async operations
 			await new Promise((resolve) => setTimeout(resolve, 10));
@@ -82,7 +83,8 @@ describe("Main Entry Point", () => {
 			const error = new Error("Failed to start");
 			mockApp.start.mockRejectedValue(error);
 
-			await import("../../src/index.js");
+			const { main } = await import("../../src/index.js");
+			await main();
 
 			// Wait for async operations
 			await new Promise((resolve) => setTimeout(resolve, 10));
@@ -91,13 +93,15 @@ describe("Main Entry Point", () => {
 		});
 
 		it("should register SIGINT handler", async () => {
-			await import("../../src/index.js");
+			const { main } = await import("../../src/index.js");
+			await main();
 
 			expect(mockOn).toHaveBeenCalledWith("SIGINT", expect.any(Function));
 		});
 
 		it("should register SIGTERM handler", async () => {
-			await import("../../src/index.js");
+			const { main } = await import("../../src/index.js");
+			await main();
 
 			expect(mockOn).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
 		});
@@ -106,7 +110,8 @@ describe("Main Entry Point", () => {
 	describe("signal handlers", () => {
 		beforeEach(async () => {
 			// Import to register handlers
-			await import("../../src/index.js");
+			const { main } = await import("../../src/index.js");
+			await main();
 			await new Promise((resolve) => setTimeout(resolve, 10));
 		});
 
@@ -137,11 +142,13 @@ describe("Main Entry Point", () => {
 			mockApp.stop.mockRejectedValue(error);
 
 			const sigintHandler = processHandlers["SIGINT"];
+			expect(sigintHandler).toBeDefined();
 
-			// The shutdown function doesn't catch errors, so it will propagate
-			await expect(sigintHandler()).rejects.toThrow("Shutdown failed");
+			// The shutdown function should now catch the error and exit
+			await sigintHandler();
 
 			expect(mockApp.stop).toHaveBeenCalled();
+			expect(mockExit).toHaveBeenCalledWith(1);
 		});
 	});
 
@@ -153,7 +160,8 @@ describe("Main Entry Point", () => {
 				throw error;
 			});
 
-			await import("../../src/index.js");
+			const { main } = await import("../../src/index.js");
+			await main();
 
 			// Wait for async operations
 			await new Promise((resolve) => setTimeout(resolve, 10));

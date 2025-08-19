@@ -3,7 +3,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { HeroUiMcpApplication } from "../../src/app.js";
+import { McpApplication } from "../../src/app.js";
 import { createTestServerConfig } from "../mocks/index.js";
 
 // Mock the GitCache
@@ -32,7 +32,7 @@ vi.mock("../../src/transport/session-manager.js", () => ({
 }));
 
 describe("Server Startup Integration", () => {
-	let app: HeroUiMcpApplication;
+	let app: McpApplication;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -58,7 +58,7 @@ describe("Server Startup Integration", () => {
 	describe("Application lifecycle", () => {
 		it("should start and stop the server successfully", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			// Start the server
 			await expect(app.start()).resolves.toBeUndefined();
@@ -72,7 +72,7 @@ describe("Server Startup Integration", () => {
 
 		it("should initialize cache before starting HTTP server", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			await app.start();
 
@@ -87,7 +87,7 @@ describe("Server Startup Integration", () => {
 			});
 
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			await expect(app.start()).resolves.toBeUndefined();
 			expect(app.isCacheInitialized()).toBe(false);
@@ -95,7 +95,7 @@ describe("Server Startup Integration", () => {
 
 		it("should handle multiple start/stop cycles", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			// First cycle
 			await app.start();
@@ -118,7 +118,7 @@ describe("Server Startup Integration", () => {
 				port: 0, // Use random port
 			});
 
-			app = new HeroUiMcpApplication(customConfig);
+			app = new McpApplication(customConfig);
 			await app.start();
 
 			// Configuration should be applied (we can't easily test port without actual network binding)
@@ -126,7 +126,7 @@ describe("Server Startup Integration", () => {
 		});
 
 		it("should use default configuration when none provided", async () => {
-			app = new HeroUiMcpApplication();
+			app = new McpApplication();
 			await app.start();
 
 			expect(app.getApp()).toBeDefined();
@@ -136,7 +136,7 @@ describe("Server Startup Integration", () => {
 	describe("Dependencies initialization", () => {
 		it("should initialize session manager", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			const sessionManager = app.getSessionManager();
 			expect(sessionManager).toBeDefined();
@@ -145,7 +145,7 @@ describe("Server Startup Integration", () => {
 
 		it("should initialize git cache", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			const gitCache = app.getGitCache();
 			expect(gitCache).toBeDefined();
@@ -154,7 +154,7 @@ describe("Server Startup Integration", () => {
 
 		it("should set up express application with middleware", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			const expressApp = app.getApp();
 			expect(expressApp).toBeDefined();
@@ -173,7 +173,7 @@ describe("Server Startup Integration", () => {
 			);
 
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			await expect(app.start()).resolves.toBeUndefined();
 		});
@@ -182,7 +182,7 @@ describe("Server Startup Integration", () => {
 			mockGitCache.initializeCache.mockRejectedValue(new Error("Cache error"));
 
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			// Should not throw, should handle gracefully
 			await expect(app.start()).rejects.toThrow();
@@ -192,7 +192,7 @@ describe("Server Startup Integration", () => {
 	describe("Graceful shutdown", () => {
 		it("should stop session manager during shutdown", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			await app.start();
 			const sessionManager = app.getSessionManager();
@@ -204,7 +204,7 @@ describe("Server Startup Integration", () => {
 
 		it("should handle stop when not started", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			// Should not throw when stopping a server that wasn't started
 			await expect(app.stop()).resolves.toBeUndefined();
@@ -212,7 +212,7 @@ describe("Server Startup Integration", () => {
 
 		it("should handle multiple stop calls", async () => {
 			const config = createTestServerConfig();
-			app = new HeroUiMcpApplication(config);
+			app = new McpApplication(config);
 
 			await app.start();
 			await app.stop();

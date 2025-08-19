@@ -1,21 +1,24 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { defaultCacheConfig, getHeroUiDocsPath } from "@config/cache.config.js";
+import {
+	getDocsPath,
+} from "@config/cache.config.js";
+import { pluginManager } from "@plugins/plugin-manager.js";
 import { BaseTool } from "@tools/base-tool.js";
 import { logger } from "@utils/logger.js";
 
 export class ListComponentsTool extends BaseTool {
 	readonly name = "list_components";
 	readonly title = "List Components Tool";
-	readonly description = "List all heroui components from cached documentation";
+	readonly description = "List all components from cached documentation";
 	readonly inputSchema = {};
 
 	async execute(_params: Record<string, unknown>): Promise<{
 		content: Array<{ type: "text"; text: string }>;
 	}> {
 		try {
-			// Get the path to the cached docs/components directory
-			const docsPath = getHeroUiDocsPath(defaultCacheConfig);
+			const cacheConfig = pluginManager.getActivePluginConfig();
+			const docsPath = getDocsPath(cacheConfig);
 			const componentsPath = path.join(docsPath, "components");
 
 			logger.debug("Looking for components in:", { componentsPath });

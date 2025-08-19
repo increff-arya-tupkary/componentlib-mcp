@@ -37,6 +37,7 @@ export default defineConfig({
 			"@cache": resolve(__dirname, "./src/cache"),
 			"@config": resolve(__dirname, "./src/config"),
 			"@http": resolve(__dirname, "./src/http"),
+			"@plugins": resolve(__dirname, "./src/plugins"),
 			"@resources": resolve(__dirname, "./src/resources"),
 			"@server": resolve(__dirname, "./src/server"),
 			"@tools": resolve(__dirname, "./src/tools"),
