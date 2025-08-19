@@ -18,6 +18,7 @@ import { McpServerFactory } from "@server/mcp-server.factory.js";
 import {
 	pluginManager,
 } from "@plugins/plugin-manager.js";
+import { registerPlugins } from "@plugins/index.js";
 import fs from "node:fs";
 import path from "node:path";
 import { GetComponentAccessibilityTool } from "@tools/components/get-component-accessibility.js";
@@ -47,6 +48,8 @@ export class McpApplication implements Application {
 		this.app = express();
 		this.sessionManager = new SessionTransportManager();
 		const configPath = path.resolve(process.cwd(), "mcp.config.json");
+		// Register all plugins before any other setup
+		registerPlugins();
 		if (fs.existsSync(configPath)) {
 			const mcpConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
 			if (mcpConfig.activePlugin) {
